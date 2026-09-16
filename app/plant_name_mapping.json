@@ -1,0 +1,18 @@
+{
+  "_comment": "Explicit, documented plant-name normalisation. Keys are dataset class-folder or CSV names, values are the canonical key used across the API. Nothing is auto-guessed: add an entry here when a dataset name differs from the knowledge-base name. Both sides are slug-normalised (lowercase, hyphens).",
+  "aliases": {
+    "Ocimum tenuiflorum": "tulsi",
+    "Holy Basil": "tulsi",
+    "Tulasi": "tulsi",
+    "Azadirachta Indica": "neem",
+    "Aloe Barbadensis Miller": "aloe-vera",
+    "Aloevera": "aloe-vera",
+    "Mentha": "mint",
+    "Pudina": "mint",
+    "Murraya Koenigii": "curry-leaves",
+    "Curry": "curry-leaves",
+    "Syzygium Cumini": "jamun",
+    "Jamun (Indian Blackberry)": "jamun",
+    "Ocimum Tenuiflorum (Tulsi)": "thulasi"
+  }
+}

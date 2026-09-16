@@ -1,0 +1,19 @@
+{
+  "architecture": "MobileNetV2 (ImageNet transfer learning)",
+  "input_size": [
+    224,
+    224,
+    3
+  ],
+  "preprocessing": "tf.keras.applications.mobilenet_v2.preprocess_input",
+  "trained_at": "2026-09-15T18:03:57.838259+00:00",
+  "class_count": 30,
+  "dataset_root": "/content/training_images",
+  "seed": 42,
+  "epochs_requested": 15,
+  "fine_tuned": true,
+  "fine_tune_at": 100,
+  "test_accuracy": 0.9637681159420289,
+  "macro_f1": 0.9613739288385943,
+  "tensorflow_version": "2.20.0"
+}
