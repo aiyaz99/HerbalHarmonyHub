@@ -15,6 +15,7 @@ Expected files (either the plain name or the "(1)"-suffixed copy is accepted):
 
 from __future__ import annotations
 
+import csv
 import json
 import re
 from functools import lru_cache
@@ -33,6 +34,7 @@ AYURGENIX_FILE = "AyurGenixAI_Dataset2.csv"
 IMAGE_ZIP_NAME = "Segmented Medicinal Leaf Images_Dataset 3.zip"
 IMAGE_DIR_NAME = "images"
 MAPPING_FILE = Path(__file__).resolve().parent / "plant_name_mapping.json"
+DISPLAY_MAPPING_FILE = Path(__file__).resolve().parent / "HerbaScan_Hindi_Name_Mapping.csv"
 
 
 def _variants(name: str) -> list[str]:
@@ -95,6 +97,34 @@ def _split_list(value: Any) -> list[str]:
         return []
     parts = re.split(r"[;|\n]+|(?<=[a-z\)])\s*,\s*", text)
     return [p.strip(" .;-") for p in parts if p and p.strip(" .;-")]
+
+
+@lru_cache(maxsize=1)
+def load_display_names() -> dict[str, str]:
+    """Read only display names; never alter lookup aliases or knowledge fields."""
+    if not DISPLAY_MAPPING_FILE.exists():
+        return {}
+    names: dict[str, str] = {}
+    conflicts: set[str] = set()
+    with DISPLAY_MAPPING_FILE.open(encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            original = (row.get("Original Common Name (preserve for existing lookup)") or "").strip()
+            display = (row.get("Hindi Common Name (display)") or "").strip()
+            if not original or not display or display.lower() == "hindi name unavailable":
+                continue
+            key = _slug(original)
+            if key in names and names[key] != display:
+                conflicts.add(key)
+            names[key] = display
+    for key in conflicts:
+        names.pop(key, None)
+        logger.warning("Conflicting Hindi display names for %s; retaining original name", key)
+    return names
+
+
+def plant_display_name(original_name: str) -> str:
+    """Match original supplied names only, without species guessing or ID changes."""
+    return load_display_names().get(_slug(original_name), original_name)
 
 
 def _first_column(columns: list[str], *candidates: str) -> str | None:
@@ -179,7 +209,7 @@ def load_plant_records() -> dict[str, dict[str, Any]]:
         record = {
             "id": key,
             "classLabel": key,
-            "name": raw_name,
+            "name": plant_display_name(raw_name),
             "localNames": _split_list(row[col_local]) if col_local else [],
             "botanicalName": str(row[col_botanical]).strip() if col_botanical else "",
             "family": str(row[col_family]).strip() if col_family else "",
