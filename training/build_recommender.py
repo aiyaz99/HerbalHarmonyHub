@@ -20,7 +20,7 @@ COLS = {
 def clean(value):
     if value is None or pd.isna(value):
         return ""
-    return re.sub(r"\\s+", " ", str(value)).strip()
+    return re.sub(r"\s+", " ", str(value)).strip()
 
 def main():
     if not SOURCE.exists():
