@@ -20,8 +20,13 @@ def _path(name: str, default: str) -> Path:
 
 
 def _origins() -> list[str]:
-    raw = _env("ALLOWED_ORIGINS", "http://localhost:8080,http://localhost:5173")
-    return [item.strip() for item in raw.split(",") if item.strip()]
+    raw = _env(
+        "ALLOWED_ORIGINS",
+        "http://localhost:8080,"
+        "http://localhost:5173,"
+        "https://bea48a8a-0a11-41c1-b613-03527a904b8b.lovableproject.com",
+    )
+    return [item.strip().rstrip("/") for item in raw.split(",") if item.strip()]
 
 
 @dataclass(frozen=True)
