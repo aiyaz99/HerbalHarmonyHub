@@ -1,10 +1,10 @@
 {
-  "built_at": "2026-10-28T07:07:49.547920+00:00",
-  "record_count": 863,
-  "vocabulary_size": 12812,
+  "built_at": "2026-11-01T18:32:00.310250+00:00",
+  "record_count": 583,
+  "vocabulary_size": 16378,
   "matrix_shape": [
-    863,
-    12812
+    583,
+    16378
   ],
   "ngram_range": [
     1,
@@ -12,9 +12,9 @@
   ],
   "min_df": 1,
   "source_files": [
-    "AyurGenixAI_Dataset2.csv",
-    "WebScrap_Dataset_final.xlsx",
-    "medical plants.csv"
+    "WebScrap_Dataset_final.xlsx"
   ],
+  "source_dataset": "WebScrap_Dataset_final.xlsx",
+  "worksheet": "WebScrap_Dataset",
   "method": "sklearn TfidfVectorizer + cosine_similarity at query time"
 }
