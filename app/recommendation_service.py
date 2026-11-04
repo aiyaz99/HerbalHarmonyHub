@@ -98,19 +98,48 @@ def recommend(query: str, top_n: int | None = None) -> dict[str, Any]:
         plant_record = get_plant_record(r.get("plantKey", r.get("plantName", "")))
         terms = set(r.get("terms", []))
         keywords = [t for t in tokens if t in terms]
+        
         matches.append({
-            "plantKey": r.get("plantKey"), "plantName": r.get("plantName"), "plant": plant_record,
-            "score": score, "matchedKeywords": keywords,
+            "plantKey": r.get("plantKey"),
+            "plantName": r.get("plantName"),
+            "plant": plant_record,
+            "score": score,
+            "matchedKeywords": keywords,
+
             "matchedSymptoms": r.get("symptoms", []),
-            "traditionalUses": r.get("traditionalUses", []), "remedies": r.get("remedies", []),
-            "precautions": r.get("precautions", []), "sourceFiles": r.get("sourceFiles", []),
-            "recordId": r.get("recordId"), "commonName": r.get("commonName", ""),
-            "scientificName": r.get("botanicalName", ""), "partOfPlant": r.get("partOfPlant", ""),
-            "preparation": r.get("preparation", ""), "doctorSource": r.get("doctorSource", ""),
-            "url": r.get("url", ""), "scientificEvidence": r.get("scientificEvidence", ""),
+            "traditionalUses": r.get("traditionalUses", []),
+            "remedies": r.get("remedies", []),
+            "precautions": r.get("precautions", []),
+
+            "sourceFiles": r.get("sourceFiles", []),
+            "recordId": r.get("recordId"),
+
+            # Original Excel source information.
+            "sourceRecord": r.get("sourceRecord", {}),
+            "sourceRow": r.get("sourceRow"),
+            "sourceDataset": r.get(
+                "sourceDataset",
+                "WebScrap_Dataset_final.xlsx"
+            ),
+
+            # Existing fields retained for frontend compatibility.
+            "commonName": r.get("commonName", ""),
+            "scientificName": r.get("botanicalName", ""),
+            "partOfPlant": r.get("partOfPlant", ""),
+            "preparation": r.get("preparation", ""),
+            "doctorSource": r.get("doctorSource", ""),
+            "url": r.get("url", ""),
+            "scientificEvidence": r.get("scientificEvidence", ""),
             "safetyEvidence": r.get("safetyEvidence", ""),
-            "explanation": f"Cosine similarity {score:.2f} against a record from WebScrap_Dataset_final.xlsx"
-                + (f"; shared terms: {', '.join(keywords)}." if keywords else "."),
+
+            "explanation": (
+                f"Cosine similarity {score:.2f} against a record "
+                f"from WebScrap_Dataset_final.xlsx"
+                + (
+                    f"; shared terms: {', '.join(keywords)}."
+                    if keywords else "."
+                )
+            ),
         })
         if len(matches) >= n:
             break
